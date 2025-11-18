@@ -118,6 +118,54 @@ struct alignas(16) MagMeasurement {
 
 static_assert(sizeof(MagMeasurement) == 32, "MagMeasurement size mismatch");
 
+// ========== Location Measurement (Android Fused Location) ==========
+
+/**
+ * @brief Android Fused Location measurement
+ *
+ * Pre-computed position from FusedLocationProvider API.
+ * Combines GPS, WiFi, cell towers, and BLE for robust positioning.
+ *
+ * Size: 80 bytes (cache-friendly)
+ * Frequency: 0.5-5 Hz (configurable via Priority)
+ */
+struct alignas(16) LocationMeasurement {
+    timestamp_t timestamp_ns;       ///< Measurement timestamp (CLOCK_MONOTONIC)
+
+    // Position in WGS84 geodetic coordinates
+    double latitude_deg;            ///< Latitude [-90, 90] degrees
+    double longitude_deg;           ///< Longitude [-180, 180] degrees
+    double altitude_m;              ///< Altitude above WGS84 ellipsoid [m]
+
+    // Position in local NED frame (computed from WGS84)
+    Vector3d position_ned;          ///< Position [North, East, Down] in meters
+
+    // Uncertainty estimates (from Android FusedLocationProvider)
+    float horizontal_accuracy_m;    ///< Horizontal accuracy (68% confidence) [m]
+    float vertical_accuracy_m;      ///< Vertical accuracy (68% confidence) [m]
+    float speed_mps;                ///< Speed [m/s] (optional)
+    float speed_accuracy_mps;       ///< Speed accuracy [m/s] (optional)
+
+    // Metadata
+    uint8_t provider_flags;         ///< Bit flags: GPS=1, WiFi=2, Cell=4, BLE=8
+    uint8_t num_satellites;         ///< Number of GPS satellites used (if available)
+    uint8_t padding[6];             ///< Alignment padding
+
+    LocationMeasurement()
+        : timestamp_ns(0),
+          latitude_deg(0.0), longitude_deg(0.0), altitude_m(0.0),
+          position_ned(Vector3d::Zero()),
+          horizontal_accuracy_m(999.0f),
+          vertical_accuracy_m(999.0f),
+          speed_mps(0.0f),
+          speed_accuracy_mps(999.0f),
+          provider_flags(0),
+          num_satellites(0),
+          padding{0} {}
+};
+
+static_assert(sizeof(LocationMeasurement) == 80, "LocationMeasurement size mismatch");
+
 // ========== IMU Noise Parameters ==========
 
 /**

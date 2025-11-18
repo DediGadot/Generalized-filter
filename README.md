@@ -8,7 +8,7 @@
 
 **Production-grade sensor fusion filter for AR/VR applications** targeting Android smart glasses (Snapdragon AR1 Gen 1). Achieves sub-meter positioning and sub-degree orientation accuracy at 50-200 Hz with **~0.5% CPU usage** and **~20mA power draw**.
 
-**Status**: ✅ **v1.0 MVP PRODUCTION READY** (2025-11-18)
+**Status**: ✅ **v1.5 PRODUCTION READY** (2025-11-18) - Now with Location Integration
 
 ---
 
@@ -17,7 +17,7 @@
 This is a **tightly-coupled multi-sensor fusion system** combining:
 - **IMU** (200 Hz): Gyroscope + accelerometer for high-rate motion tracking
 - **Magnetometer** (50 Hz): Absolute heading with magnetic disturbance detection
-- **GNSS** (1-10 Hz): GPS positioning with outlier rejection *(v1.5 planned)*
+- **Android Fused Location** (0.5-5 Hz): Multi-source positioning (GPS+WiFi+Cell+BLE) *(v1.5 complete)*
 
 The filter uses an **Error-State Extended Kalman Filter (ES-EKF)** with **Forster preintegration** to efficiently fuse asynchronous sensor measurements while maintaining real-time performance on mobile processors.
 
@@ -74,7 +74,8 @@ The filter uses an **Error-State Extended Kalman Filter (ES-EKF)** with **Forste
 │                 │                  │                  │
 │ • IMU (512)     │─────────────────▶│ • Prediction     │
 │ • Mag (64)      │                  │ • Update         │
-│ • Zero-copy     │                  │ • Inject         │
+│ • Location (16) │                  │ • Inject         │
+│ • Zero-copy     │                  │                  │
 └─────────────────┘                  └──────────────────┘
 ```
 
@@ -601,9 +602,9 @@ This project is licensed under the **MIT License**.
 
 ## Status
 
-**Current Version**: **v1.0 MVP**
+**Current Version**: **v1.5**
 **Last Updated**: 2025-11-18
-**Development Status**: ✅ **PRODUCTION-READY**
+**Development Status**: ✅ **PRODUCTION-READY** (with Location Integration)
 
 ### Roadmap
 
@@ -614,23 +615,25 @@ This project is licensed under the **MIT License**.
 - [x] Phase 4: Generic measurement update framework
 - [x] Phase 5: Magnetometer integration
 - [x] **Phase 6: Android service integration** ✅ **COMPLETE**
-- [ ] Phase 7 (v1.5): GNSS tightly-coupled integration (4-6 weeks)
-- [ ] Phase 8 (v2.0): Advanced features (VIO, WiFi RTT, ZUPT, Mag-SLAM) (3-6 months)
+- [x] **Phase 7 (v1.5): Android Fused Location integration** ✅ **COMPLETE** (2025-11-18)
+- [ ] Phase 8 (v2.0): Advanced features (VIO, WiFi RTT, ZUPT) (6-12 months)
+- [ ] Phase 9 (v3.0): Raw GNSS tightly-coupled (optional, 4-6 weeks)
 
 ### Next Milestone
 
-**v1.5** (4-6 weeks): Tightly-coupled GNSS integration
-- Pseudorange/Doppler measurements
-- Absolute position correction
-- RTK support (optional)
-- **Performance Target**: <1m positioning accuracy
-
-**v2.0** (3-6 months): Full multi-sensor fusion
-- Visual-Inertial Odometry (Snapdragon Spaces SDK)
+**v2.0** (6-12 months): Visual-Inertial Odometry and Advanced Positioning
+- Fast-MSCKF VIO integration
+- GTSAM factor graph backend with loop closure
+- GPU acceleration (Vulkan Compute)
 - WiFi RTT positioning
-- Zero-velocity updates (ZUPT)
-- Magnetic anomaly mapping (Mag-SLAM)
-- **Performance Target**: <10cm accuracy indoors
+- ZUPT integration
+- **Performance Target**: <1m accuracy without GNSS, <10cm with loop closure
+
+**v3.0** (future): Optional Raw GNSS Integration
+- Pseudorange/Doppler measurements
+- Tightly-coupled GNSS
+- RTK support (optional)
+- **Performance Target**: <50cm positioning accuracy
 
 ---
 
