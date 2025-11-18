@@ -50,7 +50,7 @@ bool test_complete_pipeline() {
     for (int i = 0; i < 1000; i++) {
         // Create IMU sample (stationary)
         ImuSample sample;
-        sample.timestamp_ns = i * 5000000;  // 200 Hz = 5ms
+        sample.timestamp_ns = static_cast<int64_t>(i) * 5000000LL;  // 200 Hz = 5ms (prevent overflow)
         sample.gyro = Vector3f::Zero();
         sample.accel = Vector3f(0, 0, -9.81);  // Gravity in body frame
 
@@ -118,7 +118,7 @@ bool test_end_to_end_performance() {
         // Preintegrate 20 IMU samples (100ms @ 200Hz)
         for (int i = 0; i < 20; i++) {
             ImuSample sample;
-            sample.timestamp_ns = i * 5000000;
+            sample.timestamp_ns = static_cast<int64_t>(i) * 5000000LL;  // Prevent overflow
             sample.gyro = Vector3f::Zero();
             sample.accel = Vector3f(0, 0, -9.81);
             preint.integrate(sample);
@@ -173,7 +173,7 @@ bool test_system_accuracy() {
 
     for (int i = 0; i < 200; i++) {
         ImuSample sample;
-        sample.timestamp_ns = i * 5000000;  // 200 Hz
+        sample.timestamp_ns = static_cast<int64_t>(i) * 5000000LL;  // 200 Hz, prevent overflow
         sample.gyro = Vector3f::Zero();
         sample.accel = Vector3f(0, 0, -9.81);
 

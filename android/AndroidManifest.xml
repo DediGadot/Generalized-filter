@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fusion">
+
+    <!-- ============================================ -->
+    <!-- SENSOR ACCESS PERMISSIONS                    -->
+    <!-- ============================================ -->
+
+    <!-- High sampling rate sensors (200 Hz IMU) -->
+    <!-- Android 12+ (API 31+) -->
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" />
+
+    <!-- ============================================ -->
+    <!-- LOCATION PERMISSIONS                         -->
+    <!-- ============================================ -->
+
+    <!-- Required for GNSS raw measurements and magnetometer reference -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Background location (if fusion runs when app backgrounded) -->
+    <!-- Android 10+ (API 29+) -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <!-- ============================================ -->
+    <!-- FOREGROUND SERVICE PERMISSIONS               -->
+    <!-- ============================================ -->
+
+    <!-- Foreground service (Android 9+, API 28+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Foreground service type: location (Android 10+, API 29+) -->
+    <!-- Required for services that use location -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- ============================================ -->
+    <!-- POWER MANAGEMENT PERMISSIONS                 -->
+    <!-- ============================================ -->
+
+    <!-- Wake lock (keep running when screen off) -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Request to ignore battery optimizations (optional, improves reliability) -->
+    <!-- User must manually grant in settings -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- ============================================ -->
+    <!-- REAL-TIME PRIORITY (OPTIONAL, REQUIRES ROOT) -->
+    <!-- ============================================ -->
+
+    <!-- Real-time thread priority (requires system signature or root) -->
+    <!-- Most apps cannot use this - graceful fallback to normal priority -->
+    <!-- <uses-permission android:name="android.permission.SYS_NICE" /> -->
+
+    <!-- ============================================ -->
+    <!-- HARDWARE FEATURES (REQUIRED)                 -->
+    <!-- ============================================ -->
+
+    <!-- Require IMU sensors -->
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.gyroscope" android:required="true" />
+
+    <!-- Magnetometer recommended but not required -->
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
+
+    <!-- ============================================ -->
+    <!-- APPLICATION                                  -->
+    <!-- ============================================ -->
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
+        <!-- ============================================ -->
+        <!-- FUSION SERVICE (FOREGROUND)                  -->
+        <!-- ============================================ -->
+
+        <service
+            android:name=".FusionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location"
+            android:description="@string/fusion_service_description">
+
+            <!-- Service is not exported - only accessible within app -->
+            <!-- To allow other apps to bind, set android:exported="true" -->
+            <!-- and add appropriate permissions/signature checks -->
+
+        </service>
+
+        <!-- ============================================ -->
+        <!-- EXAMPLE ACTIVITY (OPTIONAL)                  -->
+        <!-- ============================================ -->
+
+        <!--
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
+
+    </application>
+
+</manifest>
